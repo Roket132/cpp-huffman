@@ -1,6 +1,7 @@
 #include "library.h"
 
 #include <string>
+#include <cmath>
 #include <set>
 #include <iostream>
 #include <unordered_map>
@@ -20,11 +21,9 @@ int huffman::encode(std::string &str, std::string &str_out_buf, bool last) {
 
     for (char i : str) {
         std::string code = tree[i];
-        //  std::cerr << "er = " << i << " " << code << std::endl;
         for (char j : code) {
             if (j == '1') {
                 bit |= (1 << n);
-                //std::cerr <<  bit << std::endl;
             }
             n++;
             if (n == 8) {
@@ -34,8 +33,6 @@ int huffman::encode(std::string &str, std::string &str_out_buf, bool last) {
             }
         }
     }
-
-    //std::cerr << "bit = " << bit << std::endl;
 
     if (last) {
         if (n) {
@@ -49,13 +46,14 @@ int huffman::encode(std::string &str, std::string &str_out_buf, bool last) {
 
 void huffman::decode(std::string &str, std::string &str_out_buf, int last) {
     if (!back_tree_b) {
+        bit_h = 0;
+        pow = 0;
         pw[0] = 1;
         for (int i = 1; i < 32; i++)
             pw[i] = pw[i - 1] * 31;
         tree = build_tree(freq, 256);
         back_tree_b = true;
         build_back_tree();
-        std::cerr << std::endl << std::endl << std::endl << std::endl;
     }
 
     for (char ch : str) {
@@ -66,10 +64,12 @@ void huffman::decode(std::string &str, std::string &str_out_buf, int last) {
             } else {
                 bit_h += pw[pow++];
             }
-            if (back_tree.count(bit_h)) {
-                str_out_buf.push_back(back_tree[bit_h]);
-                bit_h = 0;
-                pow = 0;
+            if (pow >= (size_t)mn) {
+                if (back_tree.count(bit_h)) {
+                    str_out_buf.push_back(back_tree[bit_h]);
+                    bit_h = 0;
+                    pow = 0;
+                }
             }
         }
     }
@@ -110,11 +110,6 @@ void huffman::clear() {
 }
 
 std::unordered_map<char, std::string> huffman::build_tree(long long *a, int n) {
-  /*  std::cout << "///////////////////////////////////////////////////////" << std::endl;
-    for (int i = 0; i < 256; i++) {
-        std::cout << i << " " << a[i] << std::endl;
-    }
-*/
     a['a']++, a['b']++;
     std::multiset<std::pair<long long, std::string>> node;
     for (int i = 0; i < n; i++) {
@@ -167,16 +162,17 @@ void huffman::load_freq(long long *load) {
 }
 
 void huffman::build_back_tree() {
+    mn = 100;
     back_tree.clear();
     back_tree.reserve(2024 * 2024 * 10);
     for (auto it : tree) {
         unsigned long long bit = 0;
         unsigned long long pow = 1;
+        mn = ((size_t) mn > it.second.size() ? it.second.size() : mn);
         for (char i : it.second) {
             bit += (i - '0' + 1) * pow;
             pow *= 31;
         }
-        //std::cout << it.second << " " << bit << " " << it.first << "\n";
         back_tree[bit] = it.first;
     }
 }

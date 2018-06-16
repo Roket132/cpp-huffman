@@ -43,9 +43,9 @@ void encode(char *file_in, char *file_out) {
         std::string str = "";
         str.append(buf, (size_t) in2.gcount());
 
-        last = e.encode(str, str_out_buf, false);
+        e.encode(str, str_out_buf, false);
 
-        if (str_out_buf.size() > 1024 * 1024) {
+        if (str_out_buf.size() > 1024 * 1024 * 10) {
             out << str_out_buf;
             str_out_buf = "";
         }
@@ -93,11 +93,8 @@ void decode(char *file_in, char *file_out) {
     while (in.read(buf, sizeof(buf)).gcount() > 0) {
         std::string str;
         str.append(buf, (size_t) in.gcount());
-        //unsigned int kek =  clock();
         d.decode(str, res_out_buf, 0);
-        //unsigned int kek2 =  clock();
-        // std::cout << "kek: " << kek2 - kek << std::endl;
-        if (res_out_buf.size() > 1048576) {
+        if (res_out_buf.size() > 2048576) {
             out << res_out_buf;
             res_out_buf = "";
         }

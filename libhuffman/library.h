@@ -18,14 +18,11 @@ struct huffman{
 private:
     std::unordered_map<char, std::string> tree;
     std::unordered_map<unsigned long long, char> back_tree;
-    long long freq[256];
-    bool tree_b;
-    bool back_tree_b;
-    int last_ind, n;
     char bit;
-    unsigned long long bit_h = 0;
-    unsigned long long pow = 0;
-    unsigned long long pw[32];
+    int last_ind, n, mn;
+    long long freq[256];
+    bool tree_b, back_tree_b;
+    unsigned long long bit_h, pow, pw[32];
 
     void frequency(std::string &str, long long *a);
     std::unordered_map<char,std::string> build_tree(long long *a, int n);
