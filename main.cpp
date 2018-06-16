@@ -5,6 +5,9 @@
 #include <unordered_map>
 #include <ctime>
 
+
+const int SIZE = 1024;
+
 void encode(char *file_in, char *file_out) {
     unsigned int encode_t = clock();
     std::ifstream in(file_in, std::ios::in | std::ios::binary);
@@ -13,7 +16,7 @@ void encode(char *file_in, char *file_out) {
         return;
     }
 
-    char buf[2048576];
+    char buf[SIZE];
     huffman e;
     while (in.read(buf, sizeof(buf)).gcount() > 0) {
         std::string res = "";
@@ -88,7 +91,7 @@ void decode(char *file_in, char *file_out) {
     d.load_freq(freq);
 
 
-    char buf[2048576];
+    char buf[SIZE];
     std::string res_out_buf;
     while (in.read(buf, sizeof(buf)).gcount() > 0) {
         std::string str;
