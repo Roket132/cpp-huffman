@@ -48,7 +48,7 @@ void encode(char *file_in, char *file_out) {
 
         e.encode(str, str_out_buf, false);
 
-        if (str_out_buf.size() > 1024 * 1024 * 10) {
+        if (str_out_buf.size() > SIZE) {
             out << str_out_buf;
             str_out_buf = "";
         }
@@ -97,7 +97,7 @@ void decode(char *file_in, char *file_out) {
         std::string str;
         str.append(buf, (size_t) in.gcount());
         d.decode(str, res_out_buf, 0);
-        if (res_out_buf.size() > 2048576) {
+        if (res_out_buf.size() > SIZE) {
             out << res_out_buf;
             res_out_buf = "";
         }
