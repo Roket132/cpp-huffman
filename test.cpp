@@ -80,4 +80,17 @@ TEST(correctness, broke_file) {
     EXPECT_NO_THROW(decode(enc, e););
 }
 
+TEST(correctness, random_test) {
+    std::string str;
+    for (int i = 0; i < 10000000; i++) {
+        int a = rand() % 256;
+        str += char(a);
+    }
+    //std::cout << "str = " << str << std::endl;
+    huffman e;
+    std::string enc = encode(str, e);
+    std::string dec = decode(enc, e);
+    EXPECT_EQ(str, dec);
+}
+
 
